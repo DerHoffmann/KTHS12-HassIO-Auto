@@ -1,0 +1,64 @@
+alias: Müll rausstellen Erinnerung (2 Stufen)
+description: 18 Uhr normal, 19 Uhr aggressiv
+triggers:
+  - at: '18:00:00'
+    id: '18'
+    trigger: time
+  - at: '19:00:00'
+    id: '19'
+    trigger: time
+conditions:
+  - condition: template
+    value_template: |
+      {{
+        states('sensor.abfallbioabfallkths')|int == 1 or
+        states('sensor.abfallgelbetonnekths')|int == 1 or
+        states('sensor.abfallpapiertonnepamokths')|int == 1 or
+        states('sensor.abfallpapiertonnesiemerkths')|int == 1 or
+        states('sensor.abfallrestabfallkths')|int == 1
+      }}
+actions:
+  - variables:
+      message: |
+        {% set msg = [] %}
+        {% if states('sensor.abfallbioabfallkths')|int == 1 %}
+          {% set msg = msg + ['🟤 Bio'] %}
+        {% endif %}
+        {% if states('sensor.abfallgelbetonnekths')|int == 1 %}
+          {% set msg = msg + ['🟡 Gelbe Tonne'] %}
+        {% endif %}
+        {% if states('sensor.abfallpapiertonnepamokths')|int == 1 %}
+          {% set msg = msg + ['🔵🟠 Papier (Pamo)'] %}
+        {% endif %}
+        {% if states('sensor.abfallpapiertonnesiemerkths')|int == 1 %}
+          {% set msg = msg + ['🔵 Papier (Siemer)'] %}
+        {% endif %}
+        {% if states('sensor.abfallrestabfallkths')|int == 1 %}
+          {% set msg = msg + ['⚫ Restmüll'] %}
+        {% endif %}
+        {{ msg | join(', ') }}
+  - choose:
+      - conditions:
+          - condition: trigger
+            id: '18'
+        sequence:
+          - data:
+              title: 🗑️ Müll rausstellen
+              message: 'Heute rausstellen: {{ message }}'
+            action: notify.bewohner
+      - conditions:
+          - condition: trigger
+            id: '19'
+        sequence:
+          - data:
+              title: 🚨 JETZT Müll rausstellen!
+              message: ❗ {{ message }} SOFORT rausbringen!
+              data:
+                push:
+                  sound: default
+                  critical: 1
+                  volume: 1
+                priority: high
+                ttl: 0
+            action: notify.bewohner
+mode: single
