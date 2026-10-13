@@ -1,0 +1,40 @@
+
+  - platform: waste_collection_schedule
+    name: AbfallBioabfallKTHS
+    details_format: "upcoming"
+    source_index: 1
+    value_template: "{{ value.daysTo }}"
+    types:
+       - Bioabfall KTHS
+
+  - platform: waste_collection_schedule
+    name: AbfallRestabfallKTHS
+    details_format: "upcoming"
+    source_index: 1
+    value_template: "{{ value.daysTo }}"
+    types:
+       - Restabfall KTHS
+
+  - platform: waste_collection_schedule
+    name: AbfallGelbeTonneKTHS
+    details_format: "upcoming"
+    source_index: 1
+    value_template: "{{ value.daysTo }}"
+    types:
+       - Gelbe Tonne KTHS
+
+  - platform: waste_collection_schedule
+    name: AbfallPapierTonnePamoKTHS
+    details_format: "upcoming"
+    source_index: 1
+    value_template: "{{ value.daysTo }}"
+    types:
+       - Papier Tonne Pamo KTHS
+
+  - platform: waste_collection_schedule
+    name: AbfallPapierTonneSiemerKTHS
+    details_format: "upcoming"
+    source_index: 1
+    value_template: "{{ value.daysTo }}"
+    types:
+       - Papier Tonne Siemer KTHS
